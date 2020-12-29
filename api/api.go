@@ -20,7 +20,7 @@ type Route struct {
 // CreateRoute hepler to create route onto the predefined server
 func CreateRoute(srv RoutesCreator, rt Route, ctx string) {
 	path := ctx + rt.Path
-	log.Println("created path " + path)
+	log.Println("created path " + rt.Method + " " + path)
 	srv.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		log.Println("called path " + path)
 		if r.Method == rt.Method {

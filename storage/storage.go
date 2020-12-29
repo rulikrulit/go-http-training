@@ -2,6 +2,7 @@ package storage
 
 import (
 	"fmt"
+	"log"
 	"reflect"
 )
 
@@ -37,7 +38,8 @@ type Storage struct {
 }
 
 // Set method implementation
-func (s Storage) Set(i Item) error {
+func (s *Storage) Set(i Item) error {
+	log.Println(i)
 	s.Data = append(s.Data, i)
 	return nil
 }
@@ -47,7 +49,8 @@ func (s Storage) Get(f string, v FieldValue) (Item, error) {
 	for _, i := range s.Data {
 		r := reflect.ValueOf(i)
 
-		if reflect.Indirect(r).FieldByName(f) == v {
+		// Magic! Getting first field and casting string type onto it
+		if reflect.Indirect(r).FieldByIndex([]int{0}).Interface().(string) == v {
 			return i, nil
 		}
 	}
@@ -55,11 +58,11 @@ func (s Storage) Get(f string, v FieldValue) (Item, error) {
 }
 
 // Delete method implementation
-func (s Storage) Delete(f string, v FieldValue) error {
+func (s *Storage) Delete(f string, v FieldValue) error {
 	for i, item := range s.Data {
 		r := reflect.ValueOf(item)
 
-		if reflect.Indirect(r).FieldByName(f) == v {
+		if reflect.Indirect(r).FieldByIndex([]int{0}).Interface().(string) == v {
 			s.Data = append(s.Data[:i], s.Data[i+1:]...)
 			return nil
 		}

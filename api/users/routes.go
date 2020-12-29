@@ -10,7 +10,7 @@ const namespace = "/users"
 
 var defaultUsers = []storage.Item{
 	models.User{
-		Username: "1",
+		Username: "aaa",
 		Name:     "2",
 		Age:      5,
 		Gender:   "male",
@@ -23,6 +23,8 @@ var store = storage.Storage{
 
 // SetUserRoutes creates routes for users
 func SetUserRoutes(srv api.RoutesCreator) {
-	api.CreateRoute(srv, CreateListRoute(store), namespace)
-	api.CreateRoute(srv, CreateRoute, namespace)
+	api.CreateRoute(srv, CreateListRoute(&store), namespace)
+	api.CreateRoute(srv, CreateAddRoute(&store), namespace)
+	api.CreateRoute(srv, CreateGetRoute(&store), namespace)
+	api.CreateRoute(srv, CreateUpdateRoute(&store), namespace)
 }
