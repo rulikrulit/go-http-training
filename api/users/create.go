@@ -5,7 +5,6 @@ import (
 	"go-http-training/models"
 	"go-http-training/storage"
 	"io/ioutil"
-	"log"
 
 	"encoding/json"
 	"net/http"
@@ -28,8 +27,6 @@ func createAddHandler(s *storage.Storage) func(http.ResponseWriter, *http.Reques
 		}
 
 		s.Set(user)
-
-		log.Println(len(s.Data))
 
 		resp, err := json.Marshal(user)
 

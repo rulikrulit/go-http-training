@@ -21,7 +21,7 @@ func createUpdateHandler(s *storage.Storage) func(http.ResponseWriter, *http.Req
 			return
 		}
 
-		_, err := s.Get("username", string(username[0]))
+		_, err := s.GetByUsername(string(username[0]))
 
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -52,7 +52,7 @@ func createUpdateHandler(s *storage.Storage) func(http.ResponseWriter, *http.Req
 		}
 
 		log.Printf("searching user %s", username)
-		err = s.Delete("username", string(username[0]))
+		err = s.DeleteByUsername(string(username[0]))
 		s.Set(u)
 
 		if err != nil {

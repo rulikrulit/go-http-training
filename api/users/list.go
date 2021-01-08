@@ -10,7 +10,7 @@ import (
 
 func createListHandler(s *storage.Storage) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		resp, err := json.Marshal(s.Data)
+		resp, err := json.Marshal(s)
 
 		if err == nil {
 			w.WriteHeader(http.StatusOK)

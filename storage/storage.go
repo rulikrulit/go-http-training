@@ -2,72 +2,56 @@ package storage
 
 import (
 	"fmt"
+	"go-http-training/models"
 	"log"
-	"reflect"
 )
-
-// Item custom type Data in storage
-type Item interface{}
-
-// FieldValue custom field value in storage
-type FieldValue interface{}
 
 // Setter for writing into the storage
 type Setter interface {
-	Set(Item) error
+	Set(models.User) error
 }
 
 // Getter for finding and reading in storage
 // Returns the first found item
 type Getter interface {
-	Get(field string, value FieldValue) (Item, error)
+	GetByUsername(username string) (models.User, error)
 }
 
 // Deleter for finding and reading in storage
 // Deletes the first found item
 type Deleter interface {
-	Delete(field string, value FieldValue) error
+	DeleteByUsername(username string) error
 }
 
 // Storage main type combining all storage methods
-type Storage struct {
-	Data []Item
-	Setter
-	Getter
-	Deleter
-}
+type Storage map[string]models.User
 
 // Set method implementation
-func (s *Storage) Set(i Item) error {
-	log.Println(i)
-	s.Data = append(s.Data, i)
-	return nil
+func (s Storage) Set(user models.User) error {
+	if _, ok := s[user.Username]; !ok {
+		log.Println("storing user", user)
+		s[user.Username] = user
+		return nil
+	}
+	return fmt.Errorf("User already exists")
 }
 
-// Get method implementation
-func (s Storage) Get(f string, v FieldValue) (Item, error) {
-	for _, i := range s.Data {
-		r := reflect.ValueOf(i)
-
-		// Magic! Getting first field and casting string type onto it
-		if reflect.Indirect(r).FieldByIndex([]int{0}).Interface().(string) == v {
-			return i, nil
-		}
+// GetByUsername method implementation
+func (s Storage) GetByUsername(username string) (models.User, error) {
+	var user models.User
+	if user, ok := s[username]; ok {
+		return user, nil
 	}
-	return nil, fmt.Errorf("item not found")
+	return user, fmt.Errorf("User not found")
 }
 
-// Delete method implementation
-func (s *Storage) Delete(f string, v FieldValue) error {
-	for i, item := range s.Data {
-		r := reflect.ValueOf(item)
-
-		if reflect.Indirect(r).FieldByIndex([]int{0}).Interface().(string) == v {
-			s.Data = append(s.Data[:i], s.Data[i+1:]...)
-			return nil
-		}
+// DeleteByUsername method implementation
+func (s Storage) DeleteByUsername(username string) error {
+	if _, ok := s[username]; ok {
+		delete(s, username)
+		return nil
 	}
-	return fmt.Errorf("item not found")
+	return fmt.Errorf("User not found")
 }
 
 // CreateStorage sets the new storage

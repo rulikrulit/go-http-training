@@ -20,7 +20,7 @@ func createGetHandler(s *storage.Storage) func(http.ResponseWriter, *http.Reques
 		}
 
 		log.Printf("searching user %s", username)
-		user, err := s.Get("username", string(username[0]))
+		user, err := s.GetByUsername(string(username[0]))
 		log.Println("user found", user, err)
 
 		if err != nil {
